@@ -8,10 +8,13 @@ import (
 	"context"
 	"errors"
 	"log"
+	"math/rand"
+	"time"
 )
 
 func main() {
 	mainCtx, mainCtxCancel := context.WithCancel(context.Background())
+	rand.Seed(time.Now().UnixNano())
 
 	r := kafka.NewReader(
 		mainCtx,
