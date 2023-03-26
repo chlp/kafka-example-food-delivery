@@ -8,12 +8,15 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log"
 	"math/rand"
+	"time"
 )
 
 func main() {
 	_, mainCtxCancel := context.WithCancel(context.Background())
+	rand.Seed(time.Now().UnixNano())
 
 	w := kafka.NewWriter(
 		[]string{cmd.KafkaAddr},
@@ -36,6 +39,7 @@ func sendFood(w *kafka.Writer) {
 		Volume: rand.Intn(25),
 		Weight: rand.Intn(50),
 	}
+	helper.Log(fmt.Sprintf("sending: %s (%dL, %dkg)", *food.Name, food.Volume, food.Weight))
 	foodJson, _ := json.Marshal(food)
 	if err := w.Write(foodJson); err != nil {
 		log.Fatalln("problem with writing", err)
